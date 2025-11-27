@@ -55,8 +55,6 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
 
         public ButtonClickCommand RestoreConfigsEventHandler { get; set; }
 
-        public ButtonClickCommand ResetToDefaultsEventHandler { get; set; }
-
         public ButtonClickCommand RefreshBackupStatusEventHandler { get; set; }
 
         public ButtonClickCommand SelectSettingBackupDirEventHandler { get; set; }
@@ -93,7 +91,6 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
             BackupConfigsEventHandler = new ButtonClickCommand(BackupConfigsClick);
             SelectSettingBackupDirEventHandler = new ButtonClickCommand(SelectSettingBackupDir);
             RestoreConfigsEventHandler = new ButtonClickCommand(RestoreConfigsClick);
-            ResetToDefaultsEventHandler = new ButtonClickCommand(ResetToDefaultsClick);
             RefreshBackupStatusEventHandler = new ButtonClickCommand(RefreshBackupStatusEventHandlerClick);
             HideBackupAndRestoreMessageAreaAction = hideBackupAndRestoreMessageAreaAction;
             DoBackupAndRestoreDryRun = doBackupAndRestoreDryRun;
@@ -1125,31 +1122,6 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
                 // undo the settings restore.
                 SettingsBackupAndRestoreUtils.SetRegSettingsBackupAndRestoreItem("LastSettingsRestoreDate", DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture));
 
-                Restart();
-            }
-        }
-
-        /// <summary>
-        /// Method <c>ResetToDefaultsClick</c> resets all settings to their defaults.
-        /// </summary>
-        private void ResetToDefaultsClick()
-        {
-            var results = SettingsUtils.ResetSettingsToDefaults();
-            _backupRestoreMessageSeverity = results.Severity;
-
-            if (!results.Success)
-            {
-                _settingsBackupRestoreMessageVisible = true;
-
-                _settingsBackupMessage = GetResourceString(results.Message);
-
-                NotifyAllBackupAndRestoreProperties();
-
-                HideBackupAndRestoreMessageAreaAction();
-            }
-            else
-            {
-                // Restart to apply defaults
                 Restart();
             }
         }
